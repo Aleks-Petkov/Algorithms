@@ -1,16 +1,16 @@
 package com.williamfiset.algorithms.linearalgebra;
-
 import static com.google.common.truth.Truth.assertThat;
 import org.junit.*;
 
 public class GaussianEliminationTest {
 
-    @Test
+     @Test
     public void test_Gauss_Elimination_solve_1(){
         double[][] augmentedMatrix = {
                 {2, -3, 5, 10},
                 {1, 2, -1, 18},
-                {6, -1, 0, 12}
+                {6, -1, 0, 12},
+                {0, 0, 0, 0}
         };
 
         GaussianElimination.solve(augmentedMatrix);
