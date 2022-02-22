@@ -25,6 +25,7 @@ public class Knapsack_01 {
    */
   public static int knapsack(int capacity, int[] W, int[] V) {
 
+    // These cases should be tested to improve coverage
     if (W == null || V == null || W.length != V.length || capacity < 0)
       throw new IllegalArgumentException("Invalid input");
 
