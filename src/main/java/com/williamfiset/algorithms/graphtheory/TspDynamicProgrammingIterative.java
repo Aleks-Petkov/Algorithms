@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+// This class does not have 100% branch coverage.
+// The branches that aren't covered are commented, and the rest are covered.
 public class TspDynamicProgrammingIterative {
 
   private final int N, start;
@@ -20,6 +22,7 @@ public class TspDynamicProgrammingIterative {
   private double minTourCost = Double.POSITIVE_INFINITY;
   private boolean ranSolver = false;
 
+  // BRANCH REQ: No branch currently includes this constructor.
   public TspDynamicProgrammingIterative(double[][] distance) {
     this(0, distance);
   }
@@ -27,6 +30,7 @@ public class TspDynamicProgrammingIterative {
   public TspDynamicProgrammingIterative(int start, double[][] distance) {
     N = distance.length;
 
+    // BRANCH REQ: No branch currently evaluates any of these 4 conditions to TRUE.
     if (N <= 2) throw new IllegalStateException("N <= 2 not yet supported.");
     if (N != distance[0].length) throw new IllegalStateException("Matrix must be square (n x n)");
     if (start < 0 || start >= N) throw new IllegalArgumentException("Invalid start node.");
@@ -41,19 +45,22 @@ public class TspDynamicProgrammingIterative {
 
   // Returns the optimal tour for the traveling salesman problem.
   public List<Integer> getTour() {
+    // BRANCH REQ: No branch currently evaluates the condition to FALSE.
     if (!ranSolver) solve();
     return tour;
   }
 
   // Returns the minimal tour cost.
   public double getTourCost() {
+    // BRANCH REQ: No branch currently evaluates the condition to TRUE.
     if (!ranSolver) solve();
     return minTourCost;
   }
 
   // Solves the traveling salesman problem and caches solution.
   public void solve() {
-
+    // BRANCH REQ: No branch currently evaluates the condition to TRUE.
+    // All other branches after this one are covered.
     if (ranSolver) return;
 
     final int END_STATE = (1 << N) - 1;
@@ -180,5 +187,6 @@ public class TspDynamicProgrammingIterative {
 
     // Print: 42.0
     System.out.println("Tour cost: " + solver.getTourCost());
+
   }
 }
