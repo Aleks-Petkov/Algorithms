@@ -15,6 +15,7 @@ import static java.lang.Math.max;
 import static java.lang.Math.min;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class LineSegmentLineSegmentIntersection {
@@ -38,13 +39,25 @@ public class LineSegmentLineSegmentIntersection {
 
   // Finds the intersection point(s) of two line segments. Unlike regular line
   // segments, segments which are points (x1 = x2 and y1 = y2) are allowed.
-  public static Pt[] lineSegmentLineSegmentIntersection(Pt p1, Pt p2, Pt p3, Pt p4) {
+  public static Pt[] lineSegmentLineSegmentIntersection(Pt p1, Pt p2, Pt p3, Pt p4, int[] bc) {
 
     // No intersection.
-    if (!segmentsIntersect(p1, p2, p3, p4)) return new Pt[] {};
+    if (!segmentsIntersect(p1, p2, p3, p4)) {
+      bc[0]++;
+      return new Pt[] {};
+    }
+    else {
+      bc[1]++;
+    }
 
     // Both segments are a single point.
-    if (p1.equals(p2) && p2.equals(p3) && p3.equals(p4)) return new Pt[] {p1};
+    if (p1.equals(p2) && p2.equals(p3) && p3.equals(p4)) {
+      bc[2]++;
+      return new Pt[] {p1};
+    }
+    else {
+      bc[3]++;
+    }
 
     List<Pt> endpoints = getCommonEndpoints(p1, p2, p3, p4);
     int n = endpoints.size();
@@ -53,22 +66,46 @@ public class LineSegmentLineSegmentIntersection {
     // NOTE: checking only n == 1 is insufficient to return early
     // because the solution might be a sub segment.
     boolean singleton = p1.equals(p2) || p3.equals(p4);
-    if (n == 1 && singleton) return new Pt[] {endpoints.get(0)};
+    if (n == 1 && singleton) {
+      bc[4]++;
+      return new Pt[] {endpoints.get(0)};
+    }
+    else {
+      bc[5]++;
+    }
 
     // Segments are equal.
-    if (n == 2) return new Pt[] {endpoints.get(0), endpoints.get(1)};
+    if (n == 2) {
+      bc[6]++;
+      return new Pt[] {endpoints.get(0), endpoints.get(1)};
+    }
+    else {
+      bc[7]++;
+    }
 
     boolean collinearSegments = (orientation(p1, p2, p3) == 0) && (orientation(p1, p2, p4) == 0);
 
     // The intersection will be a sub-segment of the two
     // segments since they overlap each other.
     if (collinearSegments) {
-
+      bc[8]++;
       // Segment #2 is enclosed in segment #1
-      if (pointOnLine(p1, p2, p3) && pointOnLine(p1, p2, p4)) return new Pt[] {p3, p4};
+      if (pointOnLine(p1, p2, p3) && pointOnLine(p1, p2, p4)) {
+        bc[9]++;
+        return new Pt[] {p3, p4};
+      }
+      else {
+        bc[10]++;
+      }
 
       // Segment #1 is enclosed in segment #2
-      if (pointOnLine(p3, p4, p1) && pointOnLine(p3, p4, p2)) return new Pt[] {p1, p2};
+      if (pointOnLine(p3, p4, p1) && pointOnLine(p3, p4, p2)) {
+        bc[11]++;
+        return new Pt[] {p1, p2};
+      }
+      else {
+        bc[12]++;
+      }
 
       // The subsegment is part of segment #1 and part of segment #2.
       // Find the middle points which correspond to this segment.
@@ -76,25 +113,42 @@ public class LineSegmentLineSegmentIntersection {
       Pt midPoint2 = pointOnLine(p3, p4, p1) ? p1 : p2;
 
       // There is actually only one middle point!
-      if (midPoint1.equals(midPoint2)) return new Pt[] {midPoint1};
+      if (midPoint1.equals(midPoint2)) {
+        bc[13]++;
+        return new Pt[] {midPoint1};
+      }
+      else {
+        bc[14]++;
+      }
 
       return new Pt[] {midPoint1, midPoint2};
+    }
+    else {
+      bc[15]++;
     }
 
     /* Beyond this point there is a unique intersection point. */
 
     // Segment #1 is a vertical line.
     if (abs(p1.x - p2.x) < EPS) {
+      bc[16]++;
       double m = (p4.y - p3.y) / (p4.x - p3.x);
       double b = p3.y - m * p3.x;
       return new Pt[] {new Pt(p1.x, m * p1.x + b)};
     }
+    else {
+      bc[17]++;
+    }
 
     // Segment #2 is a vertical line.
     if (abs(p3.x - p4.x) < EPS) {
+      bc[18]++;
       double m = (p2.y - p1.y) / (p2.x - p1.x);
       double b = p1.y - m * p1.x;
       return new Pt[] {new Pt(p3.x, m * p3.x + b)};
+    }
+    else {
+      bc[19]++;
     }
 
     double m1 = (p2.y - p1.y) / (p2.x - p1.x);
@@ -179,6 +233,7 @@ public class LineSegmentLineSegmentIntersection {
   }
 
   public static void main(String[] args) {
+    int[] bc = new int[20]; //Branch coverage array containing number of branch hits for each branch
 
     // Segment #1 is (p1, p2), segment #2 is (p3, p4)
     Pt p1, p2, p3, p4;
@@ -187,7 +242,7 @@ public class LineSegmentLineSegmentIntersection {
     p2 = new Pt(3, 3);
     p3 = new Pt(0, 0);
     p4 = new Pt(2, 4);
-    Pt[] points = lineSegmentLineSegmentIntersection(p1, p2, p3, p4);
+    Pt[] points = lineSegmentLineSegmentIntersection(p1, p2, p3, p4, bc);
     Pt point = points[0];
 
     // Prints: (1.636, 3.273)
@@ -197,10 +252,20 @@ public class LineSegmentLineSegmentIntersection {
     p2 = new Pt(+10, 0);
     p3 = new Pt(-5, 0);
     p4 = new Pt(+5, 0);
-    points = lineSegmentLineSegmentIntersection(p1, p2, p3, p4);
+    points = lineSegmentLineSegmentIntersection(p1, p2, p3, p4, bc);
     Pt point1 = points[0], point2 = points[1];
 
     // Prints: (-5.000, 0.000) (5.000, 0.000)
     System.out.printf("(%.3f, %.3f) (%.3f, %.3f)\n", point1.x, point1.y, point2.x, point2.y);
+
+    //Branch coverage
+    int count = 0;
+    for (int j : bc) {
+      if (j != 0) {
+        count++;
+      }
+    }
+    System.out.printf("Branch coverage = %.1f%% (%d/%d)%n",((double)count/bc.length)*100, count, bc.length);
+    System.out.println(Arrays.toString(bc));
   }
 }
