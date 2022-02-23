@@ -8,9 +8,20 @@ import org.junit.*;
 public class TravelingSalesmanProblemTest {
 
   private static final double EPS = 1e-5;
-  private int[] branchCounter = new int[27];
+  private static int[] branchCounter = new int[27];
 
 
+  @AfterClass
+  public static void teardown() {
+    System.out.println("Tests done. Coverage results:");
+    double nonZero = 0;
+    for (int i = 0; i < branchCounter.length; i++) {
+      if (branchCounter[i] != 0) nonZero++;
+      System.out.println(i+1 + ": " + branchCounter[i]);
+    }
+    double coveragePercent = (int)Math.floor(nonZero/(double)branchCounter.length*100);
+    System.out.println("Branch coverage: " + coveragePercent + "% (" + (int)nonZero + "/" + branchCounter.length +")");
+  }
   @Test(expected = IllegalArgumentException.class)
   public void testTspRecursiveInvalidStartNode() {
     double[][] dist = {
@@ -181,25 +192,6 @@ public class TravelingSalesmanProblemTest {
       TspDynamicProgrammingIterative solver = new TspDynamicProgrammingIterative(dist, branchCounter);
       solver.solve();
     }
-  }
-
-  @Test
-  public void testBranchCoverage() {
-    testTspIterativePerformance();
-    testDifferentStartingNodes();
-    testGeneratedTour();
-    testDpVsBf();
-    testTsp_small1();
-
-    System.out.println("Tests done. Coverage results:");
-    double nonZero = 0;
-    for (int i = 0; i < branchCounter.length; i++) {
-      if (branchCounter[i] != 0) nonZero++;
-      System.out.println(i+1 + ": " + branchCounter[i]);
-    }
-    double coveragePercent = (int)Math.floor(nonZero/(double)branchCounter.length*100);
-    System.out.println("Branch coverage: " + coveragePercent + "% (" + (int)nonZero + "/" + branchCounter.length +")");
-    assertThat(coveragePercent).isAtLeast(95);
   }
 
   public void randomFillDistMatrix(double[][] dist) {
