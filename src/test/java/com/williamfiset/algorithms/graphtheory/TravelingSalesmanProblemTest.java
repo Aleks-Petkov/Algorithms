@@ -8,23 +8,8 @@ import org.junit.*;
 public class TravelingSalesmanProblemTest {
 
   private static final double EPS = 1e-5;
-  int[] branchCounter;
+  private int[] branchCounter = new int[27];
 
-  @Before
-  public void init() {
-    branchCounter = new int[18];
-  }
-
-  @After
-  public void teardown() {
-    System.out.println("Test done, coverage results:");
-    double nonZero = 0;
-    for (int i = 0; i < branchCounter.length; i++) {
-      if (branchCounter[i] != 0) nonZero++;
-      System.out.println(i+1 + ": " + branchCounter[i]);
-    }
-    System.out.println("Branch coverage for test: " + (int)Math.floor(nonZero/(double)branchCounter.length*100) + "% (" + (int)nonZero + "/" + branchCounter.length +")");
-  }
 
   @Test(expected = IllegalArgumentException.class)
   public void testTspRecursiveInvalidStartNode() {
@@ -43,7 +28,7 @@ public class TravelingSalesmanProblemTest {
       {4, 5, 6},
       {7, 8, 9}
     };
-    new TspDynamicProgrammingIterative(321, dist);
+    new TspDynamicProgrammingIterative(321, dist, branchCounter);
   }
 
   @Test(expected = IllegalStateException.class)
@@ -61,7 +46,7 @@ public class TravelingSalesmanProblemTest {
       {1, 2, 3},
       {4, 5, 6}
     };
-    new TspDynamicProgrammingIterative(dist);
+    new TspDynamicProgrammingIterative(dist, branchCounter);
   }
 
   @Test(expected = IllegalStateException.class)
@@ -79,7 +64,7 @@ public class TravelingSalesmanProblemTest {
       {0, 1},
       {1, 0}
     };
-    new TspDynamicProgrammingIterative(dist);
+    new TspDynamicProgrammingIterative(dist, branchCounter);
   }
 
   @Test
@@ -196,6 +181,25 @@ public class TravelingSalesmanProblemTest {
       TspDynamicProgrammingIterative solver = new TspDynamicProgrammingIterative(dist, branchCounter);
       solver.solve();
     }
+  }
+
+  @Test
+  public void testBranchCoverage() {
+    testTspIterativePerformance();
+    testDifferentStartingNodes();
+    testGeneratedTour();
+    testDpVsBf();
+    testTsp_small1();
+
+    System.out.println("Tests done. Coverage results:");
+    double nonZero = 0;
+    for (int i = 0; i < branchCounter.length; i++) {
+      if (branchCounter[i] != 0) nonZero++;
+      System.out.println(i+1 + ": " + branchCounter[i]);
+    }
+    double coveragePercent = (int)Math.floor(nonZero/(double)branchCounter.length*100);
+    System.out.println("Branch coverage: " + coveragePercent + "% (" + (int)nonZero + "/" + branchCounter.length +")");
+    assertThat(coveragePercent).isAtLeast(95);
   }
 
   public void randomFillDistMatrix(double[][] dist) {

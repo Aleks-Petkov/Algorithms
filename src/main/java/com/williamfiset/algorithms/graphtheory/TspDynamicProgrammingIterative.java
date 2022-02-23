@@ -22,7 +22,7 @@ public class TspDynamicProgrammingIterative {
   private double minTourCost = Double.POSITIVE_INFINITY;
   private boolean ranSolver = false;
   private int[] branchCounter;
-  static private final int numBranches = 18;
+  static private final int numBranches = 27;
 
   public TspDynamicProgrammingIterative(double[][] distance, int[] bc) {
     this(0, distance, bc);
@@ -76,100 +76,117 @@ public class TspDynamicProgrammingIterative {
     if (ranSolver) { // #1
       branchCounter[0]++;
       return;
-    }
-
-    final int END_STATE = (1 << N) - 1;
-    Double[][] memo = new Double[N][1 << N];
-
-    // Add all outgoing edges from the starting node to memo table.
-    for (int end = 0; end < N; end++) { // #2
+    } else { // #2
       branchCounter[1]++;
-      if (end == start) { // #3
-        branchCounter[2]++;
-        continue;
-      }
-      memo[end][(1 << start) | (1 << end)] = distance[start][end];
-    }
+      final int END_STATE = (1 << N) - 1;
+      Double[][] memo = new Double[N][1 << N];
 
-    for (int r = 3; r <= N; r++) { // #4
-      branchCounter[3]++;
-      for (int subset : combinations(r, N)) { // #5
-        branchCounter[4]++;
-        if (notIn(start, subset)) {  // #6
-          branchCounter[5]++;
+      // Add all outgoing edges from the starting node to memo table.
+      for (int end = 0; end < N; end++) { // #3
+        branchCounter[2]++;
+        if (end == start) { // #4
+          branchCounter[3]++;
           continue;
+        } else { // #5
+          branchCounter[4]++;
+          memo[end][(1 << start) | (1 << end)] = distance[start][end];
         }
-        for (int next = 0; next < N; next++) { // #7
+      }
+
+      for (int r = 3; r <= N; r++) { // #6
+        branchCounter[5]++;
+        for (int subset : combinations(r, N)) { // #7
           branchCounter[6]++;
-          if (next == start || notIn(next, subset)) { // #8
+          if (notIn(start, subset)) {  // #8
             branchCounter[7]++;
             continue;
-          }
-          int subsetWithoutNext = subset ^ (1 << next);
-          double minDist = Double.POSITIVE_INFINITY;
-          for (int end = 0; end < N; end++) { // #9
+          } else { // #9
             branchCounter[8]++;
-            if (end == start || end == next || notIn(end, subset)) { // #10
+            for (int next = 0; next < N; next++) { // #10
               branchCounter[9]++;
-              continue;
-            }
-            double newDistance = memo[end][subsetWithoutNext] + distance[end][next];
-            if (newDistance < minDist) { // #11
-              branchCounter[10]++;
-              minDist = newDistance;
+              if (next == start || notIn(next, subset)) { // #11
+                branchCounter[10]++;
+                continue;
+              } else { // #12
+                branchCounter[11]++;
+                int subsetWithoutNext = subset ^ (1 << next);
+                double minDist = Double.POSITIVE_INFINITY;
+                for (int end = 0; end < N; end++) { // #13
+                  branchCounter[12]++;
+                  if (end == start || end == next || notIn(end, subset)) { // #14
+                    branchCounter[13]++;
+                    continue;
+                  } else { // #15
+                    branchCounter[14]++;
+                    double newDistance = memo[end][subsetWithoutNext] + distance[end][next];
+                    if (newDistance < minDist) { // #16
+                      branchCounter[15]++;
+                      minDist = newDistance;
+                    } else { // #17
+                      branchCounter[16]++;
+                    }
+                  }
+                }
+                memo[next][subset] = minDist;
+              }
             }
           }
-          memo[next][subset] = minDist;
         }
       }
-    }
 
-    // Connect tour back to starting node and minimize cost.
-    for (int i = 0; i < N; i++) { // #12
-      branchCounter[11]++;
-      if (i == start) { // #13
-        branchCounter[12]++;
-        continue;
-      }
-      double tourCost = memo[i][END_STATE] + distance[i][start];
-      if (tourCost < minTourCost) { // #14
-        branchCounter[13]++;
-        minTourCost = tourCost;
-      }
-    }
-
-    int lastIndex = start;
-    int state = END_STATE;
-    tour.add(start);
-
-    // Reconstruct TSP path from memo table.
-    for (int i = 1; i < N; i++) { // #15
-      branchCounter[14]++;
-      int bestIndex = -1;
-      double bestDist = Double.POSITIVE_INFINITY;
-      for (int j = 0; j < N; j++) { // #16
-        branchCounter[15]++;
-        if (j == start || notIn(j, state)) { // 17
-          branchCounter[16]++;
+      // Connect tour back to starting node and minimize cost.
+      for (int i = 0; i < N; i++) { // #18
+        branchCounter[17]++;
+        if (i == start) { // #19
+          branchCounter[18]++;
           continue;
-        }
-        double newDist = memo[j][state] + distance[j][lastIndex];
-        if (newDist < bestDist) { // #18
-          branchCounter[17]++;
-          bestIndex = j;
-          bestDist = newDist;
+        } else { // #20
+          branchCounter[19]++;
+          double tourCost = memo[i][END_STATE] + distance[i][start];
+          if (tourCost < minTourCost) { // #21
+            branchCounter[20]++;
+            minTourCost = tourCost;
+          }
         }
       }
 
-      tour.add(bestIndex);
-      state = state ^ (1 << bestIndex);
-      lastIndex = bestIndex;
+      int lastIndex = start;
+      int state = END_STATE;
+      tour.add(start);
+
+      // Reconstruct TSP path from memo table.
+      for (int i = 1; i < N; i++) { // #22
+        branchCounter[21]++;
+        int bestIndex = -1;
+        double bestDist = Double.POSITIVE_INFINITY;
+        for (int j = 0; j < N; j++) { // #23
+          branchCounter[22]++;
+          if (j == start || notIn(j, state)) { // #24
+            branchCounter[23]++;
+            continue;
+          } else { // #25
+            branchCounter[24]++;
+            double newDist = memo[j][state] + distance[j][lastIndex];
+            if (newDist < bestDist) { // #26
+              branchCounter[25]++;
+              bestIndex = j;
+              bestDist = newDist;
+            } else { // #27
+              branchCounter[26]++;
+            }
+          }
+        }
+
+        tour.add(bestIndex);
+        state = state ^ (1 << bestIndex);
+        lastIndex = bestIndex;
+      }
+
+      tour.add(start);
+      Collections.reverse(tour);
+
+      ranSolver = true;
     }
-
-    tour.add(start);
-    Collections.reverse(tour);
-
-    ranSolver = true;
   }
 
   private static boolean notIn(int elem, int subset) {
