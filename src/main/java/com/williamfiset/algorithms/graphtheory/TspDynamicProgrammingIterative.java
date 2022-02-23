@@ -53,12 +53,26 @@ public class TspDynamicProgrammingIterative {
 
   // Solves the traveling salesman problem and caches solution.
   public void solve() {
-
     if (ranSolver) return;
 
     final int END_STATE = (1 << N) - 1;
-    Double[][] memo = new Double[N][1 << N];
+    Double[][] memo = initMemoTable();
 
+    // Connect tour back to starting node and minimize cost.
+    int[] res = minimizeTourCost(memo, END_STATE);
+    int state = res[0];
+    int lastIndex = res[1];
+
+    // Reconstruct TSP path from memo table.
+    reconstructPath(memo, state, lastIndex);
+
+    tour.add(start);
+    Collections.reverse(tour);
+    ranSolver = true;
+  }
+
+  private Double[][] initMemoTable() {
+    Double[][] memo = new Double[N][1 << N];
     // Add all outgoing edges from the starting node to memo table.
     for (int end = 0; end < N; end++) {
       if (end == start) continue;
@@ -83,8 +97,10 @@ public class TspDynamicProgrammingIterative {
         }
       }
     }
+    return memo;
+  }
 
-    // Connect tour back to starting node and minimize cost.
+  private int[] minimizeTourCost(Double[][] memo, int END_STATE) {
     for (int i = 0; i < N; i++) {
       if (i == start) continue;
       double tourCost = memo[i][END_STATE] + distance[i][start];
@@ -96,10 +112,11 @@ public class TspDynamicProgrammingIterative {
     int lastIndex = start;
     int state = END_STATE;
     tour.add(start);
+    return new int[]{state, lastIndex};
+  }
 
-    // Reconstruct TSP path from memo table.
+  private void reconstructPath(Double[][] memo, int state, int lastIndex) {
     for (int i = 1; i < N; i++) {
-
       int bestIndex = -1;
       double bestDist = Double.POSITIVE_INFINITY;
       for (int j = 0; j < N; j++) {
@@ -115,11 +132,6 @@ public class TspDynamicProgrammingIterative {
       state = state ^ (1 << bestIndex);
       lastIndex = bestIndex;
     }
-
-    tour.add(start);
-    Collections.reverse(tour);
-
-    ranSolver = true;
   }
 
   private static boolean notIn(int elem, int subset) {
