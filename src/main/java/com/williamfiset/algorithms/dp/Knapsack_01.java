@@ -24,7 +24,8 @@ public class Knapsack_01 {
    *     capacity of the knapsack is not exceeded
    */
   public static int knapsack(int capacity, int[] W, int[] V) {
-
+    // Cyclomatic complexity = 5
+    // These cases should be covered in new tests
     if (W == null || V == null || W.length != V.length || capacity < 0)
       throw new IllegalArgumentException("Invalid input");
 
@@ -34,6 +35,23 @@ public class Knapsack_01 {
     // and columns represent the weight of the knapsack
     int[][] DP = new int[N + 1][capacity + 1];
 
+    helper1(N, DP, capacity, W, V);
+
+    int sz = capacity;
+    List<Integer> itemsSelected = new ArrayList<>();
+
+    helper2(sz, itemsSelected, N, DP, W);
+
+    // Return the items that were selected
+    // java.util.Collections.reverse(itemsSelected);
+    // return itemsSelected;
+
+    // Return the maximum profit
+    return DP[N][capacity];
+  }
+
+  // CC = 5
+  public static void helper1(int N, int[][] DP, int capacity, int[] W, int[] V) {
     for (int i = 1; i <= N; i++) {
 
       // Get the value and weight of the item
@@ -49,10 +67,10 @@ public class Knapsack_01 {
         if (sz >= w && DP[i - 1][sz - w] + v > DP[i][sz]) DP[i][sz] = DP[i - 1][sz - w] + v;
       }
     }
+  }
 
-    int sz = capacity;
-    List<Integer> itemsSelected = new ArrayList<>();
-
+  // CC = 3
+  public static void helper2(int sz, List<Integer> itemsSelected, int N, int[][] DP, int[] W) {
     // Using the information inside the table we can backtrack and determine
     // which items were selected during the dynamic programming phase. The idea
     // is that if DP[i][sz] != DP[i-1][sz] then the item was selected
@@ -63,13 +81,6 @@ public class Knapsack_01 {
         sz -= W[itemIndex];
       }
     }
-
-    // Return the items that were selected
-    // java.util.Collections.reverse(itemsSelected);
-    // return itemsSelected;
-
-    // Return the maximum profit
-    return DP[N][capacity];
   }
 
   public static void main(String[] args) {
