@@ -17,27 +17,54 @@ class GaussianElimination {
   // NOTE: make sure your matrix is consistent and does not have multiple
   // solutions when you solve the system if you want a unique valid answer.
   // Time Complexity: O(r²c)
-  static void solve(double[][] augmentedMatrix) {
+  // This method does not have 100% branch coverage.
+  // If the branch does not have a comment, it is covered.
+  static void solve(double[][] augmentedMatrix, int[] array) {
     int nRows = augmentedMatrix.length, nCols = augmentedMatrix[0].length, lead = 0;
     for (int r = 0; r < nRows; r++) {
-      if (lead >= nCols) break;
+      array[0]++;
+      // BRANCH REQ: this if statement is never set to TRUE by any branch
+      if (lead >= nCols) {
+        array[1]++;
+        break;
+      } else {
+        array[2]++;
+      }
       int i = r;
+      //BRANCH REQ: the condition for the while loop is never set to TRUE
       while (Math.abs(augmentedMatrix[i][lead]) < EPS) {
+        array[3]++;
         if (++i == nRows) {
+          array[4]++;
           i = r;
-          if (++lead == nCols) return;
+          if (++lead == nCols) {
+            array[6]++;
+            return;
+          }
+          else{array[7]++;}
         }
+        else{array[5]++;}
       }
       double[] temp = augmentedMatrix[r];
       augmentedMatrix[r] = augmentedMatrix[i];
       augmentedMatrix[i] = temp;
       double lv = augmentedMatrix[r][lead];
-      for (int j = 0; j < nCols; j++) augmentedMatrix[r][j] /= lv;
+      for (int j = 0; j < nCols; j++) {
+        array[8]++;
+        augmentedMatrix[r][j] /= lv;
+      }
       for (i = 0; i < nRows; i++) {
+        array[9]++;
+        //BRANCH REQ: this if statement is set to both TRUE and FALSE
         if (i != r) {
+          array[10]++;
           lv = augmentedMatrix[i][lead];
-          for (int j = 0; j < nCols; j++) augmentedMatrix[i][j] -= lv * augmentedMatrix[r][j];
+          for (int j = 0; j < nCols; j++) {
+            array[12]++;
+            augmentedMatrix[i][j] -= lv * augmentedMatrix[r][j];
+          }
         }
+        else{array[11]++;}
       }
       lead++;
     }
@@ -69,6 +96,8 @@ class GaussianElimination {
 
   public static void main(String[] args) {
 
+    int[] array= new int[13];
+
     // Suppose we want to solve the following system for
     // the variables x, y, z:
     //
@@ -78,12 +107,12 @@ class GaussianElimination {
     // Then we would setup the following augment matrix:
 
     double[][] augmentedMatrix = {
-      {2, -3, 5, 10},
-      {1, 2, -1, 18},
-      {6, -1, 0, 12}
+            {2, -3, 5, 10},
+            {1, 2, -1, 18},
+            {6, -1, 0, 12}
     };
 
-    solve(augmentedMatrix);
+    solve(augmentedMatrix, array);
 
     if (!hasMultipleSolutions(augmentedMatrix) && !isInconsistent(augmentedMatrix)) {
 
@@ -94,5 +123,17 @@ class GaussianElimination {
       // x ~ 3.755, y ~ 10.531, z ~ 6.816
       System.out.printf("x = %.3f, y = %.3f, z = %.3f\n", x, y, z);
     }
+    //Calculate and display the branch coverage
+    int covered_branches=0;
+    for(int i=0; i< array.length; i++) {
+      System.out.println(array[i]);
+      if(array[i]>0){
+        covered_branches++;
+      }
+    }
+    System.out.println("Covered branches: " + covered_branches);
+    double percentage_covered= (covered_branches*100/13);
+    System.out.println("The branch coverage is: "+ percentage_covered +"%");
+
   }
 }
