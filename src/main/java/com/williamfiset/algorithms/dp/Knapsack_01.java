@@ -25,6 +25,7 @@ public class Knapsack_01 {
    */
   public static int knapsack(int capacity, int[] W, int[] V) {
 
+    // These cases should be tested to improve coverage
     if (W == null || V == null || W.length != V.length || capacity < 0)
       throw new IllegalArgumentException("Invalid input");
 
@@ -34,11 +35,13 @@ public class Knapsack_01 {
     // and columns represent the weight of the knapsack
     int[][] DP = new int[N + 1][capacity + 1];
 
+    // Covered by "tests" in main
     for (int i = 1; i <= N; i++) {
 
       // Get the value and weight of the item
       int w = W[i - 1], v = V[i - 1];
 
+      // Covered by "tests" in main
       for (int sz = 1; sz <= capacity; sz++) {
 
         // Consider not picking this element
@@ -46,6 +49,7 @@ public class Knapsack_01 {
 
         // Consider including the current element and
         // see if this would be more profitable
+        // Covered by "tests" in main
         if (sz >= w && DP[i - 1][sz - w] + v > DP[i][sz]) DP[i][sz] = DP[i - 1][sz - w] + v;
       }
     }
@@ -56,7 +60,9 @@ public class Knapsack_01 {
     // Using the information inside the table we can backtrack and determine
     // which items were selected during the dynamic programming phase. The idea
     // is that if DP[i][sz] != DP[i-1][sz] then the item was selected
+    // Covered by "tests" in main
     for (int i = N; i > 0; i--) {
+      // Covered by "tests" in main
       if (DP[i][sz] != DP[i - 1][sz]) {
         int itemIndex = i - 1;
         itemsSelected.add(itemIndex);
