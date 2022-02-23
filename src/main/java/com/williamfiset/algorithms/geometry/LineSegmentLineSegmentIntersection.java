@@ -43,19 +43,23 @@ public class LineSegmentLineSegmentIntersection {
 
     // No intersection.
     if (!segmentsIntersect(p1, p2, p3, p4)) {
+      // This branch is currently not covered, given the tests in main
       bc[0]++;
       return new Pt[] {};
     }
     else {
+      // This branch is covered, given the tests in main
       bc[1]++;
     }
 
     // Both segments are a single point.
     if (p1.equals(p2) && p2.equals(p3) && p3.equals(p4)) {
+      // This branch is currently not covered, given the tests in main
       bc[2]++;
       return new Pt[] {p1};
     }
     else {
+      // This branch is covered, given the tests in main
       bc[3]++;
     }
 
@@ -67,19 +71,23 @@ public class LineSegmentLineSegmentIntersection {
     // because the solution might be a sub segment.
     boolean singleton = p1.equals(p2) || p3.equals(p4);
     if (n == 1 && singleton) {
+      // This branch is currently not covered, given the tests in main
       bc[4]++;
       return new Pt[] {endpoints.get(0)};
     }
     else {
+      // This branch is covered, given the tests in main
       bc[5]++;
     }
 
     // Segments are equal.
     if (n == 2) {
+      // This branch is currently not covered, given the tests in main
       bc[6]++;
       return new Pt[] {endpoints.get(0), endpoints.get(1)};
     }
     else {
+      // This branch is covered, given the tests in main
       bc[7]++;
     }
 
@@ -88,22 +96,27 @@ public class LineSegmentLineSegmentIntersection {
     // The intersection will be a sub-segment of the two
     // segments since they overlap each other.
     if (collinearSegments) {
+      // This branch is covered, given the tests in main
       bc[8]++;
       // Segment #2 is enclosed in segment #1
       if (pointOnLine(p1, p2, p3) && pointOnLine(p1, p2, p4)) {
+        // This branch is covered, given the tests in main
         bc[9]++;
         return new Pt[] {p3, p4};
       }
       else {
+        // This branch is currently not covered, given the tests in main
         bc[10]++;
       }
 
       // Segment #1 is enclosed in segment #2
       if (pointOnLine(p3, p4, p1) && pointOnLine(p3, p4, p2)) {
+        // This branch is currently not covered, given the tests in main
         bc[11]++;
         return new Pt[] {p1, p2};
       }
       else {
+        // This branch is currently not covered, given the tests in main
         bc[12]++;
       }
 
@@ -114,16 +127,19 @@ public class LineSegmentLineSegmentIntersection {
 
       // There is actually only one middle point!
       if (midPoint1.equals(midPoint2)) {
+        // This branch is currently not covered, given the tests in main
         bc[13]++;
         return new Pt[] {midPoint1};
       }
       else {
+        // This branch is currently not covered, given the tests in main
         bc[14]++;
       }
 
       return new Pt[] {midPoint1, midPoint2};
     }
     else {
+      // This branch is covered, given the tests in main
       bc[15]++;
     }
 
@@ -131,23 +147,27 @@ public class LineSegmentLineSegmentIntersection {
 
     // Segment #1 is a vertical line.
     if (abs(p1.x - p2.x) < EPS) {
+      // This branch is currently not covered, given the tests in main
       bc[16]++;
       double m = (p4.y - p3.y) / (p4.x - p3.x);
       double b = p3.y - m * p3.x;
       return new Pt[] {new Pt(p1.x, m * p1.x + b)};
     }
     else {
+      // This branch is covered, given the tests in main
       bc[17]++;
     }
 
     // Segment #2 is a vertical line.
     if (abs(p3.x - p4.x) < EPS) {
+      // This branch is currently not covered, given the tests in main
       bc[18]++;
       double m = (p2.y - p1.y) / (p2.x - p1.x);
       double b = p1.y - m * p1.x;
       return new Pt[] {new Pt(p3.x, m * p3.x + b)};
     }
     else {
+      // This branch is covered, given the tests in main
       bc[19]++;
     }
 
