@@ -8,6 +8,23 @@ import org.junit.*;
 public class TravelingSalesmanProblemTest {
 
   private static final double EPS = 1e-5;
+  int[] branchCounter;
+
+  @Before
+  public void init() {
+    branchCounter = new int[18];
+  }
+
+  @After
+  public void teardown() {
+    System.out.println("Test done, coverage results:");
+    double nonZero = 0;
+    for (int i = 0; i < branchCounter.length; i++) {
+      if (branchCounter[i] != 0) nonZero++;
+      System.out.println(i+1 + ": " + branchCounter[i]);
+    }
+    System.out.println("Branch coverage for test: " + (int)Math.floor(nonZero/(double)branchCounter.length*100) + "% (" + (int)nonZero + "/" + branchCounter.length +")");
+  }
 
   @Test(expected = IllegalArgumentException.class)
   public void testTspRecursiveInvalidStartNode() {
@@ -80,7 +97,7 @@ public class TravelingSalesmanProblemTest {
 
     double expected = 1 + 2 + 3 + 4 + 5;
     double tspRecursiveTourCost = new TspDynamicProgrammingRecursive(dist).getTourCost();
-    double tspIterativeTourCost = new TspDynamicProgrammingIterative(dist).getTourCost();
+    double tspIterativeTourCost = new TspDynamicProgrammingIterative(dist, branchCounter).getTourCost();
 
     assertThat(tspRecursiveTourCost).isWithin(EPS).of(expected);
     assertThat(tspIterativeTourCost).isWithin(EPS).of(expected);
@@ -95,7 +112,7 @@ public class TravelingSalesmanProblemTest {
         randomFillDistMatrix(dist);
 
         TspDynamicProgrammingRecursive dpRecursiveSolver = new TspDynamicProgrammingRecursive(dist);
-        TspDynamicProgrammingIterative dpIterativeSolver = new TspDynamicProgrammingIterative(dist);
+        TspDynamicProgrammingIterative dpIterativeSolver = new TspDynamicProgrammingIterative(dist, branchCounter);
 
         double dp1 = dpRecursiveSolver.getTourCost();
         double dp2 = dpIterativeSolver.getTourCost();
@@ -116,7 +133,7 @@ public class TravelingSalesmanProblemTest {
         randomFillDistMatrix(dist);
 
         TspDynamicProgrammingRecursive dpRecursiveSolver = new TspDynamicProgrammingRecursive(dist);
-        TspDynamicProgrammingIterative dpIterativeSolver = new TspDynamicProgrammingIterative(dist);
+        TspDynamicProgrammingIterative dpIterativeSolver = new TspDynamicProgrammingIterative(dist, branchCounter);
         int[] bfPath = TspBruteForce.tsp(dist);
 
         double dp1 = dpRecursiveSolver.getTourCost();
@@ -145,7 +162,7 @@ public class TravelingSalesmanProblemTest {
         TspDynamicProgrammingRecursive dpRecursiveSolver =
             new TspDynamicProgrammingRecursive(startNode, dist);
         TspDynamicProgrammingIterative dpIterativeSolver =
-            new TspDynamicProgrammingIterative(startNode, dist);
+            new TspDynamicProgrammingIterative(startNode, dist, branchCounter);
 
         double dp1 = dpRecursiveSolver.getTourCost();
         double dp2 = dpIterativeSolver.getTourCost();
@@ -176,7 +193,7 @@ public class TravelingSalesmanProblemTest {
     for (int n = 3; n <= 16; n++) {
       double[][] dist = new double[n][n];
       randomFillDistMatrix(dist);
-      TspDynamicProgrammingIterative solver = new TspDynamicProgrammingIterative(dist);
+      TspDynamicProgrammingIterative solver = new TspDynamicProgrammingIterative(dist, branchCounter);
       solver.solve();
     }
   }
