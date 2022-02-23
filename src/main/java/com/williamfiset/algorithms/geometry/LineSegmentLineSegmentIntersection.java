@@ -63,26 +63,35 @@ public class LineSegmentLineSegmentIntersection {
     // The intersection will be a sub-segment of the two
     // segments since they overlap each other.
     if (collinearSegments) {
-
-      // Segment #2 is enclosed in segment #1
-      if (pointOnLine(p1, p2, p3) && pointOnLine(p1, p2, p4)) return new Pt[] {p3, p4};
-
-      // Segment #1 is enclosed in segment #2
-      if (pointOnLine(p3, p4, p1) && pointOnLine(p3, p4, p2)) return new Pt[] {p1, p2};
-
-      // The subsegment is part of segment #1 and part of segment #2.
-      // Find the middle points which correspond to this segment.
-      Pt midPoint1 = pointOnLine(p1, p2, p3) ? p3 : p4;
-      Pt midPoint2 = pointOnLine(p3, p4, p1) ? p1 : p2;
-
-      // There is actually only one middle point!
-      if (midPoint1.equals(midPoint2)) return new Pt[] {midPoint1};
-
-      return new Pt[] {midPoint1, midPoint2};
+      return collinearLineSegmentsIntersection(p1, p2, p3, p4);
     }
 
     /* Beyond this point there is a unique intersection point. */
 
+    return nonCollinearLineSegmentsIntersection(p1, p2, p3, p4);
+  }
+
+  // Finds the intersection point(s) of two intersecting collinear line segments
+  private static Pt[] collinearLineSegmentsIntersection(Pt p1, Pt p2, Pt p3, Pt p4) {
+    // Segment #2 is enclosed in segment #1
+    if (pointOnLine(p1, p2, p3) && pointOnLine(p1, p2, p4)) return new Pt[] {p3, p4};
+
+    // Segment #1 is enclosed in segment #2
+    if (pointOnLine(p3, p4, p1) && pointOnLine(p3, p4, p2)) return new Pt[] {p1, p2};
+
+    // The subsegment is part of segment #1 and part of segment #2.
+    // Find the middle points which correspond to this segment.
+    Pt midPoint1 = pointOnLine(p1, p2, p3) ? p3 : p4;
+    Pt midPoint2 = pointOnLine(p3, p4, p1) ? p1 : p2;
+
+    // There is actually only one middle point!
+    if (midPoint1.equals(midPoint2)) return new Pt[] {midPoint1};
+
+    return new Pt[] {midPoint1, midPoint2};
+  }
+
+  // Finds the intersection point of two intersecting non-collinear line segments
+  private static Pt[] nonCollinearLineSegmentsIntersection(Pt p1, Pt p2, Pt p3, Pt p4) {
     // Segment #1 is a vertical line.
     if (abs(p1.x - p2.x) < EPS) {
       double m = (p4.y - p3.y) / (p4.x - p3.x);
