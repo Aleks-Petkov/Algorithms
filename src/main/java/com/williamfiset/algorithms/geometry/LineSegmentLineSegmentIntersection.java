@@ -42,23 +42,23 @@ public class LineSegmentLineSegmentIntersection {
   public static Pt[] lineSegmentLineSegmentIntersection(Pt p1, Pt p2, Pt p3, Pt p4, int[] bc) {
 
     // No intersection.
-    if (!segmentsIntersect(p1, p2, p3, p4)) {
+    if (!segmentsIntersect(p1, p2, p3, p4)) { // branch 1
       // This branch is currently not covered, given the tests in main
       bc[0]++;
       return new Pt[] {};
     }
-    else {
+    else { // branch 2
       // This branch is covered, given the tests in main
       bc[1]++;
     }
 
     // Both segments are a single point.
-    if (p1.equals(p2) && p2.equals(p3) && p3.equals(p4)) {
+    if (p1.equals(p2) && p2.equals(p3) && p3.equals(p4)) { // branch 3
       // This branch is currently not covered, given the tests in main
       bc[2]++;
       return new Pt[] {p1};
     }
-    else {
+    else { // branch 4
       // This branch is covered, given the tests in main
       bc[3]++;
     }
@@ -70,23 +70,23 @@ public class LineSegmentLineSegmentIntersection {
     // NOTE: checking only n == 1 is insufficient to return early
     // because the solution might be a sub segment.
     boolean singleton = p1.equals(p2) || p3.equals(p4);
-    if (n == 1 && singleton) {
+    if (n == 1 && singleton) { // branch 5
       // This branch is currently not covered, given the tests in main
       bc[4]++;
       return new Pt[] {endpoints.get(0)};
     }
-    else {
+    else { // branch 6
       // This branch is covered, given the tests in main
       bc[5]++;
     }
 
     // Segments are equal.
-    if (n == 2) {
+    if (n == 2) { // branch 7
       // This branch is currently not covered, given the tests in main
       bc[6]++;
       return new Pt[] {endpoints.get(0), endpoints.get(1)};
     }
-    else {
+    else { // branch 8
       // This branch is covered, given the tests in main
       bc[7]++;
     }
@@ -95,27 +95,27 @@ public class LineSegmentLineSegmentIntersection {
 
     // The intersection will be a sub-segment of the two
     // segments since they overlap each other.
-    if (collinearSegments) {
+    if (collinearSegments) { // branch 9
       // This branch is covered, given the tests in main
       bc[8]++;
       // Segment #2 is enclosed in segment #1
-      if (pointOnLine(p1, p2, p3) && pointOnLine(p1, p2, p4)) {
+      if (pointOnLine(p1, p2, p3) && pointOnLine(p1, p2, p4)) { // branch 10
         // This branch is covered, given the tests in main
         bc[9]++;
         return new Pt[] {p3, p4};
       }
-      else {
+      else { // branch 11
         // This branch is currently not covered, given the tests in main
         bc[10]++;
       }
 
       // Segment #1 is enclosed in segment #2
-      if (pointOnLine(p3, p4, p1) && pointOnLine(p3, p4, p2)) {
+      if (pointOnLine(p3, p4, p1) && pointOnLine(p3, p4, p2)) { // branch 12
         // This branch is currently not covered, given the tests in main
         bc[11]++;
         return new Pt[] {p1, p2};
       }
-      else {
+      else { // branch 13
         // This branch is currently not covered, given the tests in main
         bc[12]++;
       }
@@ -126,19 +126,19 @@ public class LineSegmentLineSegmentIntersection {
       Pt midPoint2 = pointOnLine(p3, p4, p1) ? p1 : p2;
 
       // There is actually only one middle point!
-      if (midPoint1.equals(midPoint2)) {
+      if (midPoint1.equals(midPoint2)) { // branch 14
         // This branch is currently not covered, given the tests in main
         bc[13]++;
         return new Pt[] {midPoint1};
       }
-      else {
+      else { // branch 15
         // This branch is currently not covered, given the tests in main
         bc[14]++;
       }
 
       return new Pt[] {midPoint1, midPoint2};
     }
-    else {
+    else { // branch 16
       // This branch is covered, given the tests in main
       bc[15]++;
     }
@@ -146,27 +146,27 @@ public class LineSegmentLineSegmentIntersection {
     /* Beyond this point there is a unique intersection point. */
 
     // Segment #1 is a vertical line.
-    if (abs(p1.x - p2.x) < EPS) {
+    if (abs(p1.x - p2.x) < EPS) { // branch 17
       // This branch is currently not covered, given the tests in main
       bc[16]++;
       double m = (p4.y - p3.y) / (p4.x - p3.x);
       double b = p3.y - m * p3.x;
       return new Pt[] {new Pt(p1.x, m * p1.x + b)};
     }
-    else {
+    else { // branch 18
       // This branch is covered, given the tests in main
       bc[17]++;
     }
 
     // Segment #2 is a vertical line.
-    if (abs(p3.x - p4.x) < EPS) {
+    if (abs(p3.x - p4.x) < EPS) { // branch 19
       // This branch is currently not covered, given the tests in main
       bc[18]++;
       double m = (p2.y - p1.y) / (p2.x - p1.x);
       double b = p1.y - m * p1.x;
       return new Pt[] {new Pt(p3.x, m * p3.x + b)};
     }
-    else {
+    else { // branch 20
       // This branch is covered, given the tests in main
       bc[19]++;
     }
@@ -252,6 +252,20 @@ public class LineSegmentLineSegmentIntersection {
     return points;
   }
 
+  //Prints the branch coverage of the function lineSegmentLineSegmentIntersection
+  public static void printCoverage(int[] bc) {
+    System.out.println("Branch coverage:");
+    System.out.println("Function lineSegmentLineSegmentIntersection");
+    int count = 0;
+    for (int i = 0; i < bc.length; i++) {
+      System.out.printf("%d: %d%n", i+1, bc[i]);
+      if (bc[i] != 0) {
+        count++;
+      }
+    }
+    System.out.printf("Branch coverage = %.1f%% (%d/%d)%n",((double)count/bc.length)*100, count, bc.length);
+  }
+
   public static void main(String[] args) {
     int[] bc = new int[20]; //Branch coverage array containing number of branch hits for each branch
 
@@ -279,13 +293,6 @@ public class LineSegmentLineSegmentIntersection {
     System.out.printf("(%.3f, %.3f) (%.3f, %.3f)\n", point1.x, point1.y, point2.x, point2.y);
 
     //Branch coverage
-    int count = 0;
-    for (int j : bc) {
-      if (j != 0) {
-        count++;
-      }
-    }
-    System.out.printf("Branch coverage = %.1f%% (%d/%d)%n",((double)count/bc.length)*100, count, bc.length);
-    System.out.println(Arrays.toString(bc));
+    printCoverage(bc);
   }
 }
