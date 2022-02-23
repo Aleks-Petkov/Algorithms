@@ -13,28 +13,19 @@ public class LongestCommonSubsequence {
   // Returns a non unique Longest Common Subsequence
   // between the strings str1 and str2 in O(nm)
   public static String lcs(char[] A, char[] B) {
+    boolean isValid = checkParameters(A, B);
 
-    if (A == null || B == null) return null;
+    if (!isValid) return null;
 
+    char[] lcs = calculateLongestCommonSubsequence(A, B);
+
+    return new String(lcs, 0, lcs.length);
+  }
+
+  private static char[] calculateLongestCommonSubsequence(char[] A, char[] B) {
     final int n = A.length;
     final int m = B.length;
-
-    if (n == 0 || m == 0) return null;
-
-    int[][] dp = new int[n + 1][m + 1];
-
-    // Suppose A = a1a2..an-1an and B = b1b2..bn-1bn
-    for (int i = 1; i <= n; i++) {
-      for (int j = 1; j <= m; j++) {
-
-        // If ends match the LCS(a1a2..an-1an, b1b2..bn-1bn) = LCS(a1a2..an-1, b1b2..bn-1) + 1
-        if (A[i - 1] == B[j - 1]) dp[i][j] = dp[i - 1][j - 1] + 1;
-
-        // If the ends do not match the LCS of a1a2..an-1an and b1b2..bn-1bn is
-        // max( LCS(a1a2..an-1, b1b2..bn-1bn), LCS(a1a2..an-1an, b1b2..bn-1) )
-        else dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
-      }
-    }
+    int[][] dp = getInts(A, B, n, m);
 
     int lcsLen = dp[n][m];
     char[] lcs = new char[lcsLen];
@@ -58,12 +49,40 @@ public class LongestCommonSubsequence {
       i--;
       j--;
     }
+    return lcs;
+  }
 
-    return new String(lcs, 0, lcsLen);
+  private static int[][] getInts(char[] A, char[] B, int n, int m) {
+    int[][] dp = new int[n + 1][m + 1];
+
+    // Suppose A = a1a2..an-1an and B = b1b2..bn-1bn
+    for (int i = 1; i <= n; i++) {
+      for (int j = 1; j <= m; j++) {
+
+        // If ends match the LCS(a1a2..an-1an, b1b2..bn-1bn) = LCS(a1a2..an-1, b1b2..bn-1) + 1
+        if (A[i - 1] == B[j - 1])
+          dp[i][j] = dp[i - 1][j - 1] + 1;
+
+          // If the ends do not match the LCS of a1a2..an-1an and b1b2..bn-1bn is
+          // max( LCS(a1a2..an-1, b1b2..bn-1bn), LCS(a1a2..an-1an, b1b2..bn-1) )
+        else dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+      }
+    }
+    return dp;
+  }
+
+  private static boolean checkParameters(char[] A, char[] B) {
+    if (A == null || B == null) return false;
+
+    final int n = A.length;
+    final int m = B.length;
+
+    if (n == 0 || m == 0) return false;
+
+    return true;
   }
 
   public static void main(String[] args) {
-
     char[] A = {'A', 'X', 'B', 'C', 'Y'};
     char[] B = {'Z', 'A', 'Y', 'W', 'B', 'C'};
     System.out.println(lcs(A, B)); // ABC
